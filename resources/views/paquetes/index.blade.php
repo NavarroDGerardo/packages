@@ -141,6 +141,7 @@
 
         drake.on('over', function (el, container) {
             console.log(container);
+            //TODO llamar a update AJAX
         })
 
 
