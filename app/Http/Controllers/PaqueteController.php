@@ -36,9 +36,8 @@ class PaqueteController extends Controller
      */
     public function store(Request $request)
     {
-        $estado = "En Local Delivery Center";
-        Paquete::create(["estado" => "En Local Delivery Center"]);
-        return redirect()->route("dashboard");
+        $paquete = Paquete::create(["estado" => "Salida de planta"]);
+        return response()->json($paquete);
     }
 
     /**
