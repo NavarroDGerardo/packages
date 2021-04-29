@@ -26,7 +26,7 @@
                         <h5 class="card-title">Salida de planta</h5>
                         @foreach ($paquetes as $paquete)
                             @if ($paquete->estado == "Salida de planta")
-                                <button class="btn btn-primary">Pedido #{{$paquete->id}}</button>
+                                <button id="{{$paquete->id}}" class="btn btn-primary">Pedido #{{$paquete->id}}</button>
                             @endif
                         @endforeach
                     </div>
@@ -40,7 +40,7 @@
                         <h5 class="card-title">2. En Local Delivery Center</h5>
                         @foreach ($paquetes as $paquete)
                             @if ($paquete->estado == "En Local Delivery Center")
-                                <button class="btn btn-primary">Pedido #{{$paquete->id}}</button>
+                                <button id="{{$paquete->id}}" class="btn btn-primary">Pedido #{{$paquete->id}}</button>
                             @endif
                         @endforeach
                     </div>
@@ -54,7 +54,7 @@
                         <h5 class="card-title">3. En proceso de entrega</h5>
                         @foreach ($paquetes as $paquete)
                             @if ($paquete->estado == "En proceso de entrega")
-                                <button class="btn btn-primary">Pedido #{{$paquete->id}}</button>
+                                <button id="{{$paquete->id}}" class="btn btn-primary">Pedido #{{$paquete->id}}</button>
                             @endif
                         @endforeach
                     </div>
@@ -68,7 +68,7 @@
                         <h5 class="card-title">4. Entregado</h5>
                         @foreach ($paquetes as $paquete)
                             @if ($paquete->estado == "Entregado")
-                                <button class="btn btn-primary">Pedido #{{$paquete->id}}</button>
+                                <button id="{{$paquete->id}}" class="btn btn-primary">Pedido #{{$paquete->id}}</button>
                             @endif
                         @endforeach
                     </div>
@@ -80,7 +80,7 @@
                         <h5 class="card-title">a. Fallida</h5>
                         @foreach ($paquetes as $paquete)
                             @if ($paquete->estado == "Fallida")
-                                <button class="btn btn-primary">Pedido #{{$paquete->id}}</button>
+                                <button id="{{$paquete->id}}" class="btn btn-primary">Pedido #{{$paquete->id}}</button>
                             @endif
                         @endforeach
                     </div>
@@ -140,16 +140,32 @@
         dragAndDrop.init();
 
         drake.on('over', function (el, container) {
-            console.log(container);
-            //TODO llamar a update AJAX
-        })
+            inicio = $("#" + el.id).parent().attr('id');
 
-
-        // drake.on('drop', function (el, target) {
-        //     // el.style.border = '5px dashed white';
-        //     // el.innerText = "Drag MEEEE :)"
-        //     // document.getElementsByTagName('body')[0].style.backgroundColor = 'black';
-        // })
+            let paquete_url = '{{ route('paquetes.update', 0) }}';
+            paquete_url = paquete_url.replace('0', el.id);
+            $.ajax({
+                url: paquete_url,
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: el.id,
+                    estado: container.id
+                }
+            })
+            .done(function(response) {
+                if(inicio == "container4"){
+                    //$('#13').remove();
+                    //$('#container4').append('<button id="'+ response.id +'"class="btn btn-primary">Pedido #' + response.id +'</button>');
+                }
+            })
+            .fail(function(jqXHR, response) {
+                console.log('Fallido', response);
+            });
+        });
 
         function createPackage() {
             $.ajax({
@@ -165,7 +181,7 @@
             .done(function(response) {
                 let id_res = response.id
                 console.log(response)
-                $('#container1').append('<button class="btn btn-primary">Pedido #' + id_res  +'</button>')
+                $('#container1').append('<button id="'+ id_res +'"class="btn btn-primary">Pedido #' + id_res  +'</button>')
 
             })
             .fail(function(jqXHR, response) {

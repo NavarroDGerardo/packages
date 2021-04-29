@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paquete;
 use Illuminate\Http\Request;
+use SebastianBergmann\Environment\Console;
 
 class PaqueteController extends Controller
 {
@@ -69,9 +70,22 @@ class PaqueteController extends Controller
      * @param  \App\Models\Paquete  $paquete
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Paquete $paquete)
+    public function update(Request $request, $id)
     {
-        //
+        $paquete = Paquete::find($id);
+
+        if($request->estado == "container2"){
+            $paquete->estado = "En Local Delivery Center";
+        }else if($request->estado == "container3"){
+            $paquete->estado = "En proceso de entrega";
+        }else if($request->estado == "container4"){
+            $paquete->estado = "Entregado";
+        }else if($request->estado == "container5"){
+            $paquete->estado = "Fallida";
+        }
+        $paquete->save();
+
+        return response()->json($paquete);
     }
 
     /**
