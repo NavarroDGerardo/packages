@@ -74,15 +74,18 @@ class PaqueteController extends Controller
     {
         $paquete = Paquete::find($id);
 
-        if($request->estado == "container2"){
-            $paquete->estado = "En Local Delivery Center";
-        }else if($request->estado == "container3"){
-            $paquete->estado = "En proceso de entrega";
-        }else if($request->estado == "container4"){
-            $paquete->estado = "Entregado";
-        }else if($request->estado == "container5"){
-            $paquete->estado = "Fallida";
+        if($request->inicio != "container4"){
+            if($request->estado == "container2"){
+                $paquete->estado = "En Local Delivery Center";
+            }else if($request->estado == "container3"){
+                $paquete->estado = "En proceso de entrega";
+            }else if($request->estado == "container4"){
+                $paquete->estado = "Entregado";
+            }else if($request->estado == "container5"){
+                $paquete->estado = "Fallida";
+            }
         }
+
         $paquete->save();
 
         return response()->json($paquete);

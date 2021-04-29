@@ -137,10 +137,27 @@
             }
         };
 
+        let containerFrom = 0;
+
         dragAndDrop.init();
 
+        drake.on('drop', function(el, container){
+            //console.log(containerFrom + " -> " + el.id  + " -> " + container.id);
+            if(containerFrom == "container4"){
+                $("#" + el.id).remove();
+                $('#container4').append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
+                containerFrom = 0;
+            }
+            if(container.id == "container1"){
+                $("#" + el.id).remove();
+                $("#" + containerFrom).append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
+                containerFrom = 0;
+            }
+        })
+
         drake.on('over', function (el, container) {
-            inicio = $("#" + el.id).parent().attr('id');
+            let inicio = $("#" + el.id).parent().attr('id');
+            console.log(inicio);
 
             let paquete_url = '{{ route('paquetes.update', 0) }}';
             paquete_url = paquete_url.replace('0', el.id);
@@ -153,13 +170,27 @@
                 },
                 data: {
                     id: el.id,
-                    estado: container.id
+                    estado: container.id,
+                    inicio: inicio
                 }
             })
             .done(function(response) {
                 if(inicio == "container4"){
-                    //$('#13').remove();
-                    //$('#container4').append('<button id="'+ response.id +'"class="btn btn-primary">Pedido #' + response.id +'</button>');
+                    containerFrom = inicio;
+                }
+                nombreEstado = "";
+                if(response.estado == "En Local Delivery Center"){
+                    nombreEstado = "container2";
+                }else if(response.estado == "En proceso de entrega"){
+                    nombreEstado = "container3"
+                }else if(response.estado == "Entregado"){
+                    nombreEstado = "container4"
+                }else if(response.estado == "Fallida"){
+                    nombreEstado = "container5"
+                }
+
+                if(nombreEstado == inicio){
+                    containerFrom = inicio;
                 }
             })
             .fail(function(jqXHR, response) {
