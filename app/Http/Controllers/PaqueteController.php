@@ -91,23 +91,9 @@ class PaqueteController extends Controller
         }
 
         $paquete->save();
-
-        return response()->json($paquete);
-    }
-
-    public function send()
-    {
-        // ...
-
-        // paquete is being sent
-        $paquete = new Paquete;
-        $paquete->setAttribute('message', 'El paquete fue movido');
-        $paquete->save();
-
-        // want to broadcast NewPaqueteNotification event
         event(new NewPackageNotification($paquete));
 
-        // ...
+        return response()->json($paquete);
     }
     /**
      * Remove the specified resource from storage.
