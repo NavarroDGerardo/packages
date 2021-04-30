@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paquete;
 use Illuminate\Http\Request;
 use SebastianBergmann\Environment\Console;
+use App\Events\NewPackageNotification;
 
 class PaqueteController extends Controller
 {
@@ -13,10 +14,13 @@ class PaqueteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function index()
     {
         $paquetes = Paquete::all();
-        return view('paquetes.index', ['paquetes' => $paquetes]);
+        $data = array('paquetes' => $paquetes);
+        return view('paquetes/index', $data);
     }
 
     /**
@@ -91,6 +95,22 @@ class PaqueteController extends Controller
         return response()->json($paquete);
     }
 
+    public function send()
+    {
+        // ...
+
+        // paquete is being sent
+        $paquete = new Paquete;
+        $paquete->setAttribute('from', $paquete->estado);
+        $paquete->setAttribute('to', $paquete->estado);
+        $paquete->setAttribute('message', 'El paquete fue movido');
+        $paquete->save();
+
+        // want to broadcast NewPaqueteNotification event
+        event(new NewPackageNotification($paquete));
+
+        // ...
+    }
     /**
      * Remove the specified resource from storage.
      *

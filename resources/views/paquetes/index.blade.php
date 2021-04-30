@@ -92,6 +92,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{{ asset('public/echo.js') }}"></script>
+    <script src="{{ asset('resources/js/bootstrap.js') }}"></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -219,8 +222,25 @@
                 console.log('Fallido', response);
             });
         }
-
     </script>
+
+<script>
+    Pusher.logToConsole = true;
+
+    window.Echo = new Echo({
+      broadcaster: 'pusher',
+      key: '54836f59b7183a0f1320',
+      cluster: 'us2',
+      encrypted: true,
+      logToConsole: true
+    });
+
+    Echo.private('PacketChannel')
+    .listen('NewPackageNotification', (e) => {
+        console.log(e);
+    });
+  </script>
+<!-- receive notifications -->
 
 </body>
 

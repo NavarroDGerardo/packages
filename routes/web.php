@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaqueteController;
+use App\Events\NewPackageNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +16,8 @@ use App\Http\Controllers\PaqueteController;
 */
 
 Route::get('/', [PaqueteController::class, 'index']) -> name("dashboard");
+Route::get('/send/{paquete}', function($paquete){
+    event(new NewPackageNotification($paquete));
+});
 
 Route::resource('paquetes', PaqueteController::class);
