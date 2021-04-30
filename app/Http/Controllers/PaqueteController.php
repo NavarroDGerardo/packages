@@ -101,8 +101,6 @@ class PaqueteController extends Controller
 
         // paquete is being sent
         $paquete = new Paquete;
-        $paquete->setAttribute('from', $paquete->estado);
-        $paquete->setAttribute('to', $paquete->estado);
         $paquete->setAttribute('message', 'El paquete fue movido');
         $paquete->save();
 
