@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paquete;
 use Illuminate\Http\Request;
 use SebastianBergmann\Environment\Console;
+use App\Events\NewPackageNotification;
 
 class PaqueteController extends Controller
 {
@@ -13,10 +14,13 @@ class PaqueteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function index()
     {
         $paquetes = Paquete::all();
-        return view('paquetes.index', ['paquetes' => $paquetes]);
+        $data = array('paquetes' => $paquetes);
+        return view('paquetes/index', $data);
     }
 
     /**
@@ -87,10 +91,10 @@ class PaqueteController extends Controller
         }
 
         $paquete->save();
+        event(new NewPackageNotification($paquete));
 
         return response()->json($paquete);
     }
-
     /**
      * Remove the specified resource from storage.
      *
