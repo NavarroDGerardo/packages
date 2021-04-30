@@ -222,24 +222,12 @@
                 console.log('Fallido', response);
             });
         }
-    </script>
 
-<script>
-    Pusher.logToConsole = true;
-
-    window.Echo = new Echo({
-      broadcaster: 'pusher',
-      key: '54836f59b7183a0f1320',
-      cluster: 'us2',
-      encrypted: true,
-      logToConsole: true
-    });
-
-    Echo.private('PacketChannel')
-    .listen('NewPackageNotification', (e) => {
+        Echo.private('PacketChannel')
+        .listen('NewPackageNotification', (e) => {
         console.log(e);
     });
-  </script>
+    </script>
 <!-- receive notifications -->
 
 </body>
