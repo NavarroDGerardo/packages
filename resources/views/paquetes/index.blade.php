@@ -92,8 +92,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{{ asset('public/echo.js') }}"></script>
-    <script src="{{ asset('resources/js/bootstrap.js') }}"></script>
+    <script type="module" src="{{asset('js/app.js')}}"></script>
+    <script type="module" src="{{ asset('echo.js')}}"></script>
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 
     <!-- Optional JavaScript -->
@@ -145,22 +145,23 @@
         dragAndDrop.init();
 
         drake.on('drop', function(el, container){
-            //console.log(containerFrom + " -> " + el.id  + " -> " + container.id);
-            if(containerFrom == "container4"){
-                $("#" + el.id).remove();
-                $('#container4').append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
-                containerFrom = 0;
-            }
-            if(container.id == "container1"){
-                $("#" + el.id).remove();
-                $("#" + containerFrom).append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
-                containerFrom = 0;
-            }
+            // //console.log(containerFrom + " -> " + el.id  + " -> " + container.id);
+            // if(containerFrom == "container4"){
+            //     $("#" + el.id).remove();
+            //     //$('#container4').append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
+            //     containerFrom = 0;
+            // }
+            // if(container.id == "container1"){
+            //     $("#" + el.id).remove();
+            //     //$("#" + containerFrom).append('<button id="'+ el.id +'"class="btn btn-primary">Pedido #' + el.id +'</button>');
+            //     containerFrom = 0;
+            // }
+            $("#" + el.id).remove();
         })
 
         drake.on('over', function (el, container) {
             let inicio = $("#" + el.id).parent().attr('id');
-            console.log(inicio);
+            //console.log(inicio);
 
             let paquete_url = '{{ route('paquetes.update', 0) }}';
             paquete_url = paquete_url.replace('0', el.id);
@@ -214,7 +215,7 @@
             })
             .done(function(response) {
                 let id_res = response.id
-                console.log(response)
+                //console.log(response)
                 $('#container1').append('<button id="'+ id_res +'"class="btn btn-primary">Pedido #' + id_res  +'</button>')
 
             })
@@ -223,10 +224,24 @@
             });
         }
 
-        Echo.private('PacketChannel')
-        .listen('NewPackageNotification', (e) => {
-        console.log(e);
-    });
+        $( document ).ready(function() {
+            window.Echo.channel('PacketChannel').listen('NewPackageNotification', (e) => {
+                nombreEstado = "";
+                if(e.paquete.estado == "En Local Delivery Center"){
+                    nombreEstado = "container2";
+                }else if(e.paquete.estado == "En proceso de entrega"){
+                    nombreEstado = "container3"
+                }else if(e.paquete.estado == "Entregado"){
+                    nombreEstado = "container4"
+                }else if(e.paquete.estado == "Fallida"){
+                    nombreEstado = "container5"
+                }
+                //console.log(e.paquete.id + " -> " + e.paquete.estado);
+                $("#" + e.paquete.id).remove();
+                $("#" + nombreEstado).append('<button id="'+ e.paquete.id +'"class="btn btn-primary">Pedido #' + e.paquete.id +'</button>');
+            });
+        });
+
     </script>
 <!-- receive notifications -->
 
